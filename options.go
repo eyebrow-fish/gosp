@@ -9,7 +9,12 @@ func DefaultErrorHandler(err error) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		// Error is ignored because we won't be able to write anything.
 		// Just do the 500 instead.
-		_, _ = w.Write([]byte(err.Error()))
 		w.WriteHeader(http.StatusInternalServerError)
+		_, _ = w.Write([]byte(err.Error()))
 	})
+}
+
+// DefaultEmptyHandler simply responds with a 404.
+func DefaultEmptyHandler(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusNotFound)
 }
