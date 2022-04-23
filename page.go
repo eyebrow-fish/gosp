@@ -15,7 +15,7 @@ type PageHandler[T any] struct {
 	// The fields of this Template are filled by the result of Handler.
 	Template *template.Template
 
-	// ErrorHandler is used whenever Handler return an error.
+	// ErrorHandler is used whenever Handler returns an error.
 	// The default value is DefaultErrorHandler.
 	ErrorHandler func(error) http.Handler
 
@@ -24,7 +24,7 @@ type PageHandler[T any] struct {
 	EmptyHandler http.Handler
 }
 
-// NewPageHandler requires only the "MainPageHandler" and Template fields be provided.
+// NewPageHandler requires only PageHandler.Handler and PageHandler.Template fields be provided.
 // Everything else has a default.
 func NewPageHandler[T any](handler func() (*T, error), template *template.Template, options ...PageHandlerOption[T]) *PageHandler[T] {
 	p := &PageHandler[T]{handler, template, DefaultErrorHandler, http.HandlerFunc(DefaultEmptyHandler)}

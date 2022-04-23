@@ -3,6 +3,7 @@ package gosp
 import "net/http"
 
 type PageHandlerOption[T any] func(p *PageHandler[T])
+type FormHandlerOption[T any] func(p *FormHandler[T])
 
 // DefaultErrorHandler writes the content of the error as the response and responds with a 500.
 func DefaultErrorHandler(err error) http.Handler {
@@ -17,4 +18,9 @@ func DefaultErrorHandler(err error) http.Handler {
 // DefaultEmptyHandler simply responds with a 404.
 func DefaultEmptyHandler(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNotFound)
+}
+
+// DefaultRedirectHandler should redirect back to previous page.
+func DefaultRedirectHandler(w http.ResponseWriter, r *http.Request) {
+	http.Redirect(w, r, r.Header.Get("referer"), http.StatusOK)
 }
