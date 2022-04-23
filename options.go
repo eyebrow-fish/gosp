@@ -16,7 +16,7 @@ func DefaultErrorHandler(err error) http.Handler {
 }
 
 // DefaultEmptyHandler simply responds with a 404.
-func DefaultEmptyHandler(w http.ResponseWriter, r *http.Request) {
+func DefaultEmptyHandler(w http.ResponseWriter, _ *http.Request) {
 	w.WriteHeader(http.StatusNotFound)
 }
 
