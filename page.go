@@ -9,7 +9,7 @@ import (
 // The template can be seen a structure for this data.
 type PageHandler[T any] struct {
 	// Handler determines what data is to be filled in Template.
-	Handler func() (*T, error)
+	Handler func(*http.Request) (*T, error)
 
 	// Template is the HTML template for our page.
 	// The fields of this Template are filled by the result of Handler.
@@ -26,7 +26,7 @@ type PageHandler[T any] struct {
 
 // NewPageHandler requires only PageHandler.Handler and PageHandler.Template fields be provided.
 // Everything else has a default.
-func NewPageHandler[T any](handler func() (*T, error), template *template.Template, options ...PageHandlerOption[T]) *PageHandler[T] {
+func NewPageHandler[T any](handler func(*http.Request) (*T, error), template *template.Template, options ...PageHandlerOption[T]) *PageHandler[T] {
 	p := &PageHandler[T]{handler, template, DefaultErrorHandler, http.HandlerFunc(DefaultEmptyHandler)}
 	for _, o := range options {
 		o(p)
@@ -34,8 +34,9 @@ func NewPageHandler[T any](handler func() (*T, error), template *template.Templa
 	return p
 }
 
+// ServeHTTP delegates all logic to the handler methods of PageHandler.
 func (p *PageHandler[T]) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	t, err := p.Handler()
+	t, err := p.Handler(r)
 	if err != nil {
 		p.ErrorHandler(err).ServeHTTP(w, r)
 		return

@@ -17,7 +17,7 @@ func TestPage_happyPath(t *testing.T) {
 	rec := httptest.NewRecorder()
 
 	NewPageHandler[testStruct](
-		func() (*testStruct, error) {
+		func(_ *http.Request) (*testStruct, error) {
 			return &testStruct{"foobar"}, nil
 		},
 		template.Must(template.New("test").Parse("<div>{{ .Content }}</div>")),
@@ -35,7 +35,7 @@ func TestPage_errorInHandler(t *testing.T) {
 	rec := httptest.NewRecorder()
 
 	NewPageHandler[testStruct](
-		func() (*testStruct, error) {
+		func(_ *http.Request) (*testStruct, error) {
 			return nil, errors.New("oops")
 		},
 		template.Must(template.New("test").Parse("<div>{{ .Content }}</div>")),
@@ -60,7 +60,7 @@ func TestPage_errorInHandler_defaultError(t *testing.T) {
 	rec := httptest.NewRecorder()
 
 	NewPageHandler[testStruct](
-		func() (*testStruct, error) {
+		func(_ *http.Request) (*testStruct, error) {
 			return nil, errors.New("handler error")
 		},
 		template.Must(template.New("test").Parse("<div>{{ .Content }}</div>")),
@@ -78,7 +78,7 @@ func TestPage_errorInTemplateExecution(t *testing.T) {
 	rec := httptest.NewRecorder()
 
 	NewPageHandler[testStruct](
-		func() (*testStruct, error) {
+		func(_ *http.Request) (*testStruct, error) {
 			return &testStruct{"foobar"}, nil
 		},
 		template.Must(template.New("test").Parse("<d")),
@@ -103,7 +103,7 @@ func TestPage_defaultEmpty(t *testing.T) {
 	rec := httptest.NewRecorder()
 
 	NewPageHandler[testStruct](
-		func() (*testStruct, error) {
+		func(_ *http.Request) (*testStruct, error) {
 			return nil, nil
 		},
 		template.Must(template.New("test").Parse("<d")),

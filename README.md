@@ -15,33 +15,21 @@ like this one could possibly help reduce on monstrously overcomplicated frontend
 There are two main "Handlers" that exist in this module which satisfy
 [http.Handler](https://pkg.go.dev/net/http#Handler), these are `PageHandler` and `FormHandler`.
 
-An example usage of `PageHandler` is as follows *(stolen from my tests)*:
+Examples of these handlers are in [example/](./example), but here is a truncated version of the page handler example:
 
 ```go
-package main
+// Your main function or something.
 
-import (
-	"github.com/eyebrow-fish/gosp"
-	"html/template"
-	"net/http"
+pageHandler := gosp.NewPageHandler[testStruct](
+    // The actual handler for this page. Normally you would make a query or two here.
+    func(_ *http.Request) (*testStruct, error) {
+        return &testStruct{"foobar"}, nil
+    },
+    // Using a file with go:embed is quite useful here.
+    template.Must(template.New("test").Parse("<div>{{ .Content }}</div>")),
 )
-
-type testStruct struct{ Content string }
-
-func main() {
-	pageHandler := gosp.NewPageHandler[testStruct](
-		// The actual handler for this page. Normally you would make a query or two here.
-		func() (*testStruct, error) {
-			return &testStruct{"foobar"}, nil
-		},
-		// Using a file with go:embed is quite useful here.
-		template.Must(template.New("test").Parse("<div>{{ .Content }}</div>")),
-	)
-
-	http.Handle("/", pageHandler)
-
-	http.ListenAndServe(":8080", nil) // Remember to handle your errors, kids!
-}
+	
+// Using "pageHandler" with net/http.
 ```
 
 Using `FormHandler` is slightly more simple because only one handler is required, and you don't have to

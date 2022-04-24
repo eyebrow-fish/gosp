@@ -5,7 +5,8 @@ import (
 	"net/http"
 )
 
-var decoder = schema.NewDecoder()
+// FormDecoder is the schema.Decoder used for every FormHandler.
+var FormDecoder = schema.NewDecoder() // Exposed to allow users to modify behaviour.
 
 // FormHandler is a http.Handler compatible struct which handles http.MethodPost requests with form bodies.
 type FormHandler[T any] struct {
@@ -33,6 +34,7 @@ func NewFormHandler[T any](handler func(*T) error, options ...FormHandlerOption[
 	return h
 }
 
+// ServeHTTP delegates all logic to the handler methods of FormHandler.
 func (f FormHandler[T]) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	form := new(T)
 
@@ -41,7 +43,7 @@ func (f FormHandler[T]) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := decoder.Decode(form, r.PostForm); err != nil {
+	if err := FormDecoder.Decode(form, r.PostForm); err != nil {
 		f.ErrorHandler(err).ServeHTTP(w, r)
 		return
 	}
