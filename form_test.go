@@ -24,7 +24,7 @@ func TestForm_happyPath(t *testing.T) {
 		return nil
 	}).ServeHTTP(rec, req)
 
-	assert.Equal(t, http.StatusOK, rec.Code)
+	assert.Equal(t, http.StatusFound, rec.Code)
 	assert.Equal(t, []string{"/prev"}, rec.Header()["Location"])
 }
 

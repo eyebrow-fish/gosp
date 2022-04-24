@@ -22,5 +22,5 @@ func DefaultEmptyHandler(w http.ResponseWriter, _ *http.Request) {
 
 // DefaultRedirectHandler should redirect back to previous page.
 func DefaultRedirectHandler(w http.ResponseWriter, r *http.Request) {
-	http.Redirect(w, r, r.Header.Get("referer"), http.StatusOK)
+	http.Redirect(w, r, r.Header.Get("referer"), http.StatusFound)
 }
