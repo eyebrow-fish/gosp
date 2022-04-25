@@ -19,7 +19,7 @@ func TestForm_happyPath(t *testing.T) {
 		Foo string `schema:"foo"`
 	}
 
-	NewFormHandler[testStruct](func(s *testStruct) error {
+	NewFormHandler[testStruct](func(_ *http.Request, s *testStruct) error {
 		assert.Equal(t, "bar", s.Foo)
 		return nil
 	}).ServeHTTP(rec, req)
@@ -39,7 +39,7 @@ func TestForm_customRedirectHandler(t *testing.T) {
 	}
 
 	NewFormHandler[testStruct](
-		func(s *testStruct) error {
+		func(_ *http.Request, s *testStruct) error {
 			assert.Equal(t, "bar", s.Foo)
 			return nil
 		},
@@ -63,7 +63,7 @@ func TestForm_errorHandle(t *testing.T) {
 	}
 
 	NewFormHandler[testStruct](
-		func(s *testStruct) error { return errors.New("oof") },
+		func(_ *http.Request, s *testStruct) error { return errors.New("oof") },
 	).ServeHTTP(rec, req)
 
 	assert.Equal(t, http.StatusInternalServerError, rec.Code)

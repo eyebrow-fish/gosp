@@ -11,7 +11,7 @@ type testStruct struct{ Content string }
 func main() {
 	formHandler := gosp.NewFormHandler[testStruct](
 		// Form handling is done in this function. The form has already been deserialized.
-		func(t *testStruct) error {
+		func(_ *http.Request, t *testStruct) error {
 			fmt.Println(t.Content)
 			return nil
 		},
